@@ -14,3 +14,20 @@ library(dplyr)
 library(car)
 ```
 
+
+Import and tidy up the job prep demo data
+
+```{r echo=FALSE}
+demo <- as.tibble(read_csv(here("data", "job_prep_demo.csv")))
+
+demo
+
+GPA <- as.tibble(read_csv(here("data", "job_prep_GPA.csv")))
+
+GPA
+
+survey <- as.tibble(read_csv(here("data", "job_prep_survey.csv")))
+
+survey
+```
+
