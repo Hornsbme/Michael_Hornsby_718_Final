@@ -3,7 +3,9 @@ title: "Michael Hornsby's EDRM 718 Final Project Functions script"
 output: html_notebook
 ---
 
-```{r}
+Import the usual libraries that will be used for this project
+
+```{r include=FALSE}
 library(here)
 library(tidyverse)
 library(ggrepel)
@@ -11,5 +13,74 @@ library(scales)
 library(readxl)
 library(purrr)
 library(dplyr)
+library(car)
+```
+
+
+This is the function to highlight large residuals.  The function will model y
+as a function of x and return a logical indicating if each x,y pair is 
+one of the p largest.
+
+```{r}
+resid.function <- function(xvar, yvar, p) {
+  
+# Create the model and residuals
+  
+model <- lm(yvar ~ xvar)
+
+residuals <- residuals(model)
+
+my_data <- as.data.frame(cbind(xvar, yvar, residuals))
+
+# Create an order vector and order the residuals from largest to smallest
+order_vector <- order(abs(my_data$residuals), decreasing = TRUE)
+
+my_data <- my_data[order_vector,]
+
+# Create the logical vector, add it to my data set, and return the data set
+
+logical_vector <- (c(rep(TRUE, p), rep(FALSE,length(my_data$xvar) - p)))
+
+my_data$outcome <- logical_vector
+
+my_data <- data.frame(my_data)
+
+# This creates the scatterplot with the regline.
+
+scatterplot(x = my_data$xvar,
+            y = my_data$residuals,
+            regLine = TRUE,
+            groups = my_data$outcome,
+            legend = FALSE,
+            smooth = FALSE,
+            xlab = "Sepal Length",
+            ylab = "Residual",
+            main = "Highlighted Largest Residuals")
+
+print(my_data)
+}
+```
+
+
+This is the function to reverse score items.
+Numeric is the number of choices on the Likert Scale for the items.
+Reverse is a vector of the items numbers that are reverse scored.
+
+```{r}
+my.function <- function(dataset, numeric, reverse) {
+
+reverse <- reverse + 1
+numeric <- numeric + 1
+reverse_dataset <- dataset
+
+for (i in reverse) {
+  reverse_dataset[i] <- abs(reverse_dataset[i] - numeric)
+}
+
+dataset$total <- rowSums(reverse_dataset[,2:as.numeric(ncol(reverse_dataset))])
+
+print(dataset)
+
+}
 ```
 

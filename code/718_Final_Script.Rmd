@@ -3,7 +3,7 @@ title: "Michael Hornsby's EDRM 718 Final Project Script"
 output: html_notebook
 ---
 
-```{r}
+```{r include=FALSE}
 library(here)
 library(tidyverse)
 library(ggrepel)
@@ -11,5 +11,6 @@ library(scales)
 library(readxl)
 library(purrr)
 library(dplyr)
+library(car)
 ```
 
