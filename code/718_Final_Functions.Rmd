@@ -67,7 +67,7 @@ Numeric is the number of choices on the Likert Scale for the items.
 Reverse is a vector of the items numbers that are reverse scored.
 
 ```{r}
-my.function <- function(dataset, numeric, reverse) {
+reverse.function <- function(dataset, numeric, reverse) {
 
 reverse <- reverse + 1
 numeric <- numeric + 1
@@ -80,6 +80,8 @@ for (i in reverse) {
 dataset$total <- rowSums(reverse_dataset[,2:as.numeric(ncol(reverse_dataset))])
 
 print(dataset)
+
+dataset.tot <<- dataset
 
 }
 ```

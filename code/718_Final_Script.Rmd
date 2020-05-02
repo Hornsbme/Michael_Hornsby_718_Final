@@ -117,3 +117,31 @@ ggplot(GPA, aes(x = xvar, y = yvar)) +
        y = "Semester 2 GPA")
 ```
 
+
+Let's calculate GPA for the year
+
+```{r}
+GPA$year.GPA <- 
+  ((GPA$S1Credits * GPA$S1GPA) + (GPA$S2Credits * GPA$S2GPA)) / (GPA$S1Credits + GPA$S2Credits)
+```
+
+Let's reverse score those appropriate survey items!
+
+```{r}
+reverse.function(survey, 6, c(4, 9, 12, 13))
+
+survey <- dataset.tot
+```
+
+The individua item responses in the output table above remain the same
+as in the original data, however the total column at the end factors in 
+the reverse score of the items.  Let's left join the total onto the GPA data.
+
+```{r}
+survey.tot <- survey[,c(1,16)]
+GPA <- survey.tot %>% left_join(GPA, by = "ID")
+```
+
+Finally, we need to get the subject onto the GPA dataset so the GPA dataset
+will be ready for use in all data analysis relevant to our three main
+research questions.
