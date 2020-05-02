@@ -75,3 +75,45 @@ again just to make sure there were no duplicate ID's.
 
 Let's move to examining student GPAs.
 
+```{r}
+ggplot(GPA, aes(x = S1GPA, y = S2GPA)) +
+  geom_point() +
+  labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA",
+       x = "Semester 1 GPA",
+       y = "Semester 2 GPA")
+```
+
+I would consider this consistant within reason.  The relationship between
+semester 2 gpa and semester 1 gpa looks linear.  There looks to be a 
+reasonable amount of deviate from what I would picture a best fit line
+to be, but no obvious outliers.
+
+Let's highlight the 10 percent largest residuals, and create the
+dataset that doesn't have these largest residuals.
+
+```{r}
+resid.function(GPA$S1GPA, GPA$S2GPA, 74, GPA$ID)
+
+ggplot(my_data, aes(x = xvar, y = yvar, color = outcome)) +
+  geom_point() +
+  labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA with Highlighted Residuals",
+       x = "Semester 1 GPA",
+       y = "Semester 2 GPA")
+```
+
+```{r}
+my_data$ID <- my_data$key
+
+GPA <- my_data %>% left_join(GPA, by = "ID")
+GPA <- GPA %>% filter(outcome == FALSE)
+```
+
+
+```{r}
+ggplot(GPA, aes(x = xvar, y = yvar)) +
+  geom_point() +
+  labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA with Top 10% Residuals Removed",
+       x = "Semester 1 GPA",
+       y = "Semester 2 GPA")
+```
+

@@ -22,7 +22,7 @@ as a function of x and return a logical indicating if each x,y pair is
 one of the p largest.
 
 ```{r}
-resid.function <- function(xvar, yvar, p) {
+resid.function <- function(xvar, yvar, p, key) {
   
 # Create the model and residuals
   
@@ -30,7 +30,7 @@ model <- lm(yvar ~ xvar)
 
 residuals <- residuals(model)
 
-my_data <- as.data.frame(cbind(xvar, yvar, residuals))
+my_data <- as.data.frame(cbind(key, xvar, yvar, residuals))
 
 # Create an order vector and order the residuals from largest to smallest
 order_vector <- order(abs(my_data$residuals), decreasing = TRUE)
@@ -43,21 +43,21 @@ logical_vector <- (c(rep(TRUE, p), rep(FALSE,length(my_data$xvar) - p)))
 
 my_data$outcome <- logical_vector
 
-my_data <- data.frame(my_data)
+my_data <<- data.frame(my_data)
 
 # This creates the scatterplot with the regline.
 
 scatterplot(x = my_data$xvar,
             y = my_data$residuals,
-            regLine = TRUE,
+            regLine = FALSE,
             groups = my_data$outcome,
             legend = FALSE,
             smooth = FALSE,
-            xlab = "Sepal Length",
-            ylab = "Residual",
+            xlab = "Semester 1 GPA",
+            ylab = "Semester 2 GPA",
             main = "Highlighted Largest Residuals")
 
-print(my_data)
+return(my_data)
 }
 ```
 
