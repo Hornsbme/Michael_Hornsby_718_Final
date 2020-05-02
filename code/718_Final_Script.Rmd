@@ -15,7 +15,7 @@ library(car)
 ```
 
 
-Import and tidy up the job prep demo data
+Import the three data sets.  (Note: tidying was completed in Excel previously)
 
 ```{r echo=FALSE}
 demo <- as.tibble(read_csv(here("data", "job_prep_demo.csv")))
@@ -30,4 +30,48 @@ survey <- as.tibble(read_csv(here("data", "job_prep_survey.csv")))
 
 survey
 ```
+
+
+Let's check the ID keys.  I want to make sure there is no ID that appears more
+than once in the three datasets.
+
+```{r}
+check.demo <- demo %>% count(ID)
+check.demo %>% filter(n > 1)
+```
+
+
+```{r}
+check.survey <- survey %>% count(ID)
+check.survey %>% filter(n > 1)
+```
+
+
+```{r}
+check.GPA <- GPA %>% count(ID)
+check.GPA %>% filter(n > 1)
+```
+
+We see that ID 659 appears twice in the GPA dataset. Let's look
+at these observations.
+
+```{r}
+GPA %>% filter(ID == 659)
+```
+
+If the ID was simply a duplicate observation I would only remove one of them.
+However, because the two are different, I'm going to remove both to be safe.
+
+```{r}
+GPA <- GPA %>% filter(ID != 659)
+
+check.GPA <- GPA %>% count(ID)
+check.GPA %>% filter(n > 1)
+```
+
+I removed the two observations where the ID was 659.  The number of 
+observations in GPA dropped from 739 to 737, and I ran the check
+again just to make sure there were no duplicate ID's.
+
+Let's move to examining student GPAs.
 
