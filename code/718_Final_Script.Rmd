@@ -269,3 +269,6 @@ while keeping out family-wise confidence level at 95%.
 TukeyHSD(my.anova)
 ```
 
+These pairwise comparisons echo what is demonstrated in the boxplots above.
+Applied and formal sciences have the highest optimism about the future, with
+humanities having much lower optimist about the future.
