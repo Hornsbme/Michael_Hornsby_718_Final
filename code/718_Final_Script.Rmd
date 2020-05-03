@@ -15,7 +15,7 @@ library(car)
 ```
 
 
-Import the three data sets.  (Note: tidying was completed in Excel previously)
+Import the three data sets.  (Note: some tidying was completed in Excel previously)
 
 ```{r echo=FALSE}
 demo <- as.tibble(read_csv(here("data", "job_prep_demo.csv")))
@@ -133,7 +133,7 @@ reverse.function(survey, 6, c(4, 9, 12, 13))
 survey <- dataset.tot
 ```
 
-The individua item responses in the output table above remain the same
+The individual item responses in the output table above remain the same
 as in the original data, however the total column at the end factors in 
 the reverse score of the items.  Let's left join the total onto the GPA data.
 
@@ -144,4 +144,10 @@ GPA <- survey.tot %>% left_join(GPA, by = "ID")
 
 Finally, we need to get the subject onto the GPA dataset so the GPA dataset
 will be ready for use in all data analysis relevant to our three main
-research questions.
+research questions. A left join is used here as well.
+
+```{r}
+demo.sub <- demo[,c(1,5)]
+GPA <- demo.sub %>% left_join(GPA, by = "ID")
+```
+
