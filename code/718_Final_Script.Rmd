@@ -142,12 +142,130 @@ survey.tot <- survey[,c(1,16)]
 GPA <- survey.tot %>% left_join(GPA, by = "ID")
 ```
 
-Finally, we need to get the subject onto the GPA dataset so the GPA dataset
+We need to get the subject onto the GPA dataset so the GPA dataset
 will be ready for use in all data analysis relevant to our three main
 research questions. A left join is used here as well.
 
 ```{r}
 demo.sub <- demo[,c(1,5)]
 GPA <- demo.sub %>% left_join(GPA, by = "ID")
+```
+
+The last step for getting the GPA dataset ready for our analysis is to
+drop the observations with missing data.
+
+```{r}
+GPA <- GPA[complete.cases(GPA),]
+```
+
+Alright, we have 478 complete observations in our GPA dataset for which to 
+perform out analysis.
+
+
+Let's start with the research questions regarding whether GPA is
+related to optimism about future employement.  Let's start by looking 
+at a scatterplot of this relationship with a best fit line.
+
+```{r}
+GPA %>%
+  ggplot(aes(x = survey.total, y = year.GPA)) +
+  geom_point() +
+  stat_smooth(method = lm, se = FALSE) +
+  labs(title = "Scatter Plot of Senior Year GPA on Optimism About Future",
+       x = "Optimism About Future",
+       y = "Senior Year GPA")
+```
+
+
+
+```{r}
+GPAonOPT.mod <- lm(year.GPA ~ survey.total, data = GPA)
+summary(GPAonOPT.mod)
+```
+
+Well, we see that in our model that survey.total has p-value of 0.672 that is
+not significant at any reasonable alpha level.  (I did briefly explore a 
+higher order relationship just to check, but that wasn't helpful.) 
+I cannot conclude that senior year GPA is related to degree of 
+optimism about future employement.
+Considering we have to use these two variables for further research questions,
+I want to check a qqplot for both of these variables.
+
+```{r}
+GPA %>%
+  ggplot() +
+  geom_qq(aes(sample = survey.total)) +
+  labs(title = "QQ-plot for Survey Total")
+
+GPA %>%
+  ggplot() +
+  geom_qq(aes(sample = year.GPA)) +
+  labs(title = "QQ-plot for Senior Year GPA")
+```
+
+Well, neither of these look spectacular, but I think it is safe enough
+to continue with our analysis regarding the rest of the research questions.
+Let's look to see if there is an interaction effect between
+the degree of optimism and subject.
+
+```{r}
+model.interaction <- aov(GPA$year.GPA ~ GPA$survey.total*GPA$Subject)
+Anova(model.interaction)
+
+model.maineffects <- aov(GPA$year.GPA ~ GPA$survey.total+GPA$Subject)
+Anova(model.maineffects)
+```
+
+The p-values here are all disappointing.  None of these p-value are
+significant at any reasonable alpha level.  This would suggest that 
+not only is the interaction between optimism and subject not significant, 
+neither of the main effects are significant predictors of senior year
+GPA either. Let's look at a plot just to make sure.
+
+```{r}
+GPA %>%
+  ggplot(aes(x = survey.total, y = year.GPA, color = Subject, shape = Subject)) +
+  geom_point(aes(color = Subject)) +
+  stat_smooth(method = lm, se = FALSE) +
+  labs(title = "Senior Year GPA on Optimism About Future by Subject",
+       x = "Optimism About Future",
+       y = "Senior Year GPA")
+```
+
+The plot looks about as expected after the ANCOVA results and knowing what the 
+first scatterplot looked like.  The relationship between senior year GPA and
+optimism about the future is fairly consistant for all categories of desciplines.
+
+Let's look at boxplots for levels of optimism about the future for each subject
+before we look at the ANOVA.
+
+```{r}
+GPA %>%
+  ggplot(aes(x = Subject, y = survey.total)) +
+  geom_boxplot() +
+  labs(title = "Boxplots of Optimism about Future by Subject",
+       x = "Subject",
+       y = "Survey Total")
+```
+
+
+There does look to be some differences here.
+I think we can safely assume our assumptions are met here.
+Survey total looked close enough to normal and our variances look mostly
+equal among subjects. Let's run the ANOVA and see what happens.
+
+```{r}
+my.anova <- aov(survey.total ~ Subject, data = GPA)
+my.anova.result <- anova(my.anova)
+my.anova.result
+```
+
+Well, our omnibus test here has a significant p-value at the alpha = 0.05 
+confidence level.  This would suggest that at least one subject mean is 
+different than the others.  Let's look at all of our pairwise comparisons
+while keeping out family-wise confidence level at 95%.
+
+```{r}
+TukeyHSD(my.anova)
 ```
 
