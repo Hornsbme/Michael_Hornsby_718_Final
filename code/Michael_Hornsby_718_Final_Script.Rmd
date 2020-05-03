@@ -79,6 +79,7 @@ Let's move to examining student GPAs.
 ggplot(GPA, aes(x = S1GPA, y = S2GPA)) +
   geom_point() +
   labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA",
+       subtitle = "Figure 1",
        x = "Semester 1 GPA",
        y = "Semester 2 GPA")
 ```
@@ -97,6 +98,7 @@ resid.function(GPA$S1GPA, GPA$S2GPA, 74, GPA$ID)
 ggplot(my_data, aes(x = xvar, y = yvar, color = outcome)) +
   geom_point() +
   labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA with Highlighted Residuals",
+       subtitle = "Figure 2",
        x = "Semester 1 GPA",
        y = "Semester 2 GPA")
 ```
@@ -113,6 +115,7 @@ GPA <- GPA %>% filter(outcome == FALSE)
 ggplot(GPA, aes(x = xvar, y = yvar)) +
   geom_point() +
   labs(title = "Scatterplot of Semester 2 GPA on Semester 1 GPA with Top 10% Residuals Removed",
+       subtitle = "Figure 3",
        x = "Semester 1 GPA",
        y = "Semester 2 GPA")
 ```
@@ -172,6 +175,7 @@ GPA %>%
   geom_point() +
   stat_smooth(method = lm, se = FALSE) +
   labs(title = "Scatter Plot of Senior Year GPA on Optimism About Future",
+       subtitle = "Figure 4",
        x = "Optimism About Future",
        y = "Senior Year GPA")
 ```
@@ -195,12 +199,14 @@ I want to check a qqplot for both of these variables.
 GPA %>%
   ggplot() +
   geom_qq(aes(sample = survey.total)) +
-  labs(title = "QQ-plot for Survey Total")
+  labs(title = "QQ-plot for Survey Total",
+       subtitle = "Figure 5")
 
 GPA %>%
   ggplot() +
   geom_qq(aes(sample = year.GPA)) +
-  labs(title = "QQ-plot for Senior Year GPA")
+  labs(title = "QQ-plot for Senior Year GPA",
+       subtitle = "Figure 6")
 ```
 
 Well, neither of these look spectacular, but I think it is safe enough
@@ -224,10 +230,11 @@ GPA either. Let's look at a plot just to make sure.
 
 ```{r}
 GPA %>%
-  ggplot(aes(x = survey.total, y = year.GPA, color = Subject, shape = Subject)) +
+  ggplot(aes(x = survey.total, y = year.GPA, color = Subject)) +
   geom_point(aes(color = Subject)) +
   stat_smooth(method = lm, se = FALSE) +
   labs(title = "Senior Year GPA on Optimism About Future by Subject",
+       subtitle = "Figure 7",
        x = "Optimism About Future",
        y = "Senior Year GPA")
 ```
@@ -244,6 +251,7 @@ GPA %>%
   ggplot(aes(x = Subject, y = survey.total)) +
   geom_boxplot() +
   labs(title = "Boxplots of Optimism about Future by Subject",
+       subtitle = "Figure 8",
        x = "Subject",
        y = "Survey Total")
 ```
